@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PaymentLogInterfce.API.Data;
+using PaymentLogInterfce.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,11 @@ builder.Services.AddDbContext<PaymentLogDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnString"));
 });
+
+
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 
