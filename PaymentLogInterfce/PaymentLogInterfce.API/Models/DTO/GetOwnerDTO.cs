@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 
-namespace PaymentLogInterfce.API.Models.Domain
+namespace PaymentLogInterfce.API.Models.DTO
 {
-    public class Owner
+    public class GetOwnerDTO
     {
-        public Guid Id { get; set; }
+
         public string OwnerId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -12,14 +12,6 @@ namespace PaymentLogInterfce.API.Models.Domain
         public string Email { get; set; }
         public string TowerNo { get; set; }
         public string FlatNo { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-
-        [DefaultValue("N")]
-        public string IsDeleted { get; set; }
-
-        public IEnumerable<PaymentLog> PaymentLogs { get; set; }
-
 
     }
 }

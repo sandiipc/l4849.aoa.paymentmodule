@@ -12,7 +12,7 @@ using PaymentLogInterfce.API.Data;
 namespace PaymentLogInterfce.API.Migrations
 {
     [DbContext(typeof(PaymentLogDbContext))]
-    [Migration("20230217180639_InitialMigration")]
+    [Migration("20230224042142_Initial Migration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -43,6 +43,10 @@ namespace PaymentLogInterfce.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IsDeleted")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -51,7 +55,7 @@ namespace PaymentLogInterfce.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OwnerCode")
+                    b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -85,12 +89,12 @@ namespace PaymentLogInterfce.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OwnerCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ParentOwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentDate")
                         .IsRequired()

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PaymentLogInterfce.API.Data;
 using PaymentLogInterfce.API.Models.Domain;
+//using PaymentLogInterfce.API.Models.DTO;
 
 namespace PaymentLogInterfce.API.Repositories
 {
@@ -21,37 +22,39 @@ namespace PaymentLogInterfce.API.Repositories
             return owner;
         }
 
-        public async Task<Owner> DeleteOwnerAsync(string  ownerCode)
+        public async Task<Owner> DeleteOwnerAsync(string ownerId)
         {
-            var owner = await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x => x.OwnerCode == ownerCode);
+            var owner = await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x => x.OwnerId == ownerId && x.IsDeleted == "N");
 
             if(owner == null)
             {
                 return null;
             }
 
-            this.paymentLogDbContext.Owners.Remove(owner);
+            owner.IsDeleted = "Y";
             await this.paymentLogDbContext.SaveChangesAsync();
 
             return owner;
 
         }
 
-        public async Task<IEnumerable<Owner>> GetAllAsync()
+        public async Task<IEnumerable<Owner>> GetAllActiveOwnersAsync()
         {
-            return await this.paymentLogDbContext.Owners.ToListAsync();
+            return await this.paymentLogDbContext.Owners.Where(x => x.IsDeleted == "N").ToListAsync();
 
         }
 
-        public async Task<Owner> GetByIdAsync(string ownerCode)
+        public async Task<Owner> GetActiveOwnerByIdAsync(string ownerId)
         {
-            return await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x => x.OwnerCode == ownerCode);
+
+            return await this.paymentLogDbContext.Owners.Where(x => x.OwnerId == ownerId && x.IsDeleted == "N").FirstOrDefaultAsync();
+
         }
 
-        public async Task<Owner> UpdateOwnerAsync(string ownerCode, Owner owner)
+        public async Task<Owner> UpdateOwnerAsync(string ownerId, Owner owner)
         {
 
-            var existingOwner = await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x => x.OwnerCode == ownerCode);
+            var existingOwner = await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x => x.OwnerId == ownerId && x.IsDeleted == "N");
 
             if (existingOwner == null)
             {
@@ -62,14 +65,13 @@ namespace PaymentLogInterfce.API.Repositories
             existingOwner.LastName = owner.LastName;
             existingOwner.MobileNo= owner.MobileNo;
             existingOwner.Email = owner.Email;
-            existingOwner.TowerNo= owner.TowerNo;
-            existingOwner.FlatNo  = owner.FlatNo;
-
 
             this.paymentLogDbContext.SaveChanges();
 
             return existingOwner;
 
         }
+    
+    
     }
 }

@@ -1,11 +1,10 @@
-﻿using System.ComponentModel;
+﻿using Azure.Identity;
 
-namespace PaymentLogInterfce.API.Models.Domain
+namespace PaymentLogInterfce.API.Models.DTO
 {
-    public class Owner
+    public class AddOwnerDTO
     {
-        public Guid Id { get; set; }
-        public string OwnerId { get; set; }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobileNo { get; set; }
@@ -14,11 +13,6 @@ namespace PaymentLogInterfce.API.Models.Domain
         public string FlatNo { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-
-        [DefaultValue("N")]
-        public string IsDeleted { get; set; }
-
-        public IEnumerable<PaymentLog> PaymentLogs { get; set; }
 
 
     }

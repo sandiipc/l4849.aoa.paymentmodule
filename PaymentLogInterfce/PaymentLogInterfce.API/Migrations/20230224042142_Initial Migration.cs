@@ -16,7 +16,7 @@ namespace PaymentLogInterfce.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OwnerCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MobileNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -24,7 +24,8 @@ namespace PaymentLogInterfce.API.Migrations
                     TowerNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FlatNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -36,7 +37,7 @@ namespace PaymentLogInterfce.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OwnerCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParentOwnerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PaymentDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TxnID = table.Column<string>(type: "nvarchar(max)", nullable: false),

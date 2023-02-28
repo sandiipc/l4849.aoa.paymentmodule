@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PaymentLogInterfce.API.Models.Domain;
 using PaymentLogInterfce.API.Repositories;
@@ -20,31 +21,13 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllOwners() 
+        public async Task<IActionResult> GetAllActiveOwnersAsync() 
         {
 
-            var owners = await this.ownerRepository.GetAllAsync();
+            var owners = await this.ownerRepository.GetAllActiveOwnersAsync();
+           
 
-            //var ownersDTO = new List<Models.DTO.Owner>();
-            //owners.ToList().ForEach(owner =>
-            //{
-            //    var ownerDTO = new Models.DTO.Owner()
-            //    {
-            //        Id= owner.Id,
-            //        OwnerCode= owner.OwnerCode,
-            //        FirstName= owner.FirstName,
-            //        LastName= owner.LastName,
-            //        MobileNo= owner.MobileNo,
-            //        Email= owner.Email,
-            //        TowerNo= owner.TowerNo,
-            //        FlatNo= owner.FlatNo
-
-            //    };
-
-            //    ownersDTO.Add(ownerDTO);
-            //});
-
-            var ownersDTO = mapper.Map<List<Models.DTO.Owner>>(owners);
+            var ownersDTO = mapper.Map<List<Models.DTO.GetOwnerDTO>>(owners);
 
 
             return Ok(ownersDTO);
@@ -54,18 +37,18 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpGet]
-        [Route("{ownerCode}")]
-        [ActionName("GetOwnerById")]
-        public async Task<IActionResult> GetOwnerById(string ownerCode)
+        [Route("{ownerId}")]
+        [ActionName("GetActiveOwnerByIdAsync")]
+        public async Task<IActionResult> GetActiveOwnerByIdAsync(string ownerId)
         {
-            var owner = await this.ownerRepository.GetByIdAsync(ownerCode);
+            var owner = await this.ownerRepository.GetActiveOwnerByIdAsync(ownerId);
 
             if(owner == null)
             {
-                return NotFound();
+                return NotFound($"OwnerId {ownerId} not found.");
             }
 
-            var ownerDTO = mapper.Map<Models.DTO.Owner>(owner);
+            var ownerDTO = mapper.Map<Models.DTO.GetOwnerDTO>(owner);
 
             return Ok(ownerDTO);
 
@@ -73,112 +56,85 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddOwnerAsync([FromBody] Models.DTO.Owner ownerDTO)
+        [Authorize]
+        public async Task<IActionResult> AddOwnerAsync([FromBody] Models.DTO.AddOwnerDTO ownerDTO)
         {
-            //Models.Domain.Owner owner = mapper.Map<Models.Domain.Owner>(ownerDTO);
 
-            var owner = new Models.Domain.Owner()
+            var ownerId = ownerDTO.TowerNo.ToUpper() + ownerDTO.FlatNo.ToUpper();
+
+            var existingOwner = await GetActiveOwnerByIdAsync(ownerId);
+
+            if(existingOwner is NotFoundObjectResult)
             {
-                Id  = Guid.NewGuid(),
-                OwnerCode = ownerDTO.OwnerCode,
-                FirstName = ownerDTO.FirstName,
-                LastName = ownerDTO.LastName,
-                MobileNo= ownerDTO.MobileNo,
-                Email= ownerDTO.Email,
-                TowerNo= ownerDTO.TowerNo,
-                FlatNo= ownerDTO.FlatNo,
-                UserName= ownerDTO.UserName,
-                Password    = ownerDTO.Password
+                var owner = mapper.Map<Models.Domain.Owner>(ownerDTO);
+                owner.Id = Guid.NewGuid();
+                owner.OwnerId = ownerId;
+                owner.IsDeleted = "N";
 
-            };
+                owner = await this.ownerRepository.AddOwnerAsync(owner);
+                var response = mapper.Map<Models.DTO.GetOwnerDTO>(owner);
 
-            owner = await this.ownerRepository.AddOwnerAsync(owner);
+                return CreatedAtAction(nameof(GetActiveOwnerByIdAsync), new { OwnerId = ownerId }, response);
 
-            //ownerDTO = mapper.Map<Models.DTO.Owner>(owner);
+            }
 
-            var response = new Models.DTO.Owner()
-            {
-                Id= owner.Id,
-                OwnerCode = owner.OwnerCode,
-                FirstName = owner.FirstName,
-                LastName = owner.LastName,
-                MobileNo = owner.MobileNo,
-                Email = owner.Email,
-                TowerNo = owner.TowerNo,
-                FlatNo = owner.FlatNo,
-                UserName = owner.UserName,
-                Password = owner.Password
 
-            };
+            return BadRequest($"Duplicate owner id {ownerId}.");
 
-            return CreatedAtAction(nameof(GetOwnerById), new { OwnerCode = ownerDTO.OwnerCode }, response);
 
         }
 
         [HttpDelete]
-        [Route("{ownerCode}")]
-        public async Task<IActionResult> DeleteOwnerAsync(string ownerCode)
+        [Route("{ownerId}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteOwnerAsync(string ownerId)
         {
 
-           var owner = await this.ownerRepository.DeleteOwnerAsync(ownerCode);
+           var owner = await this.ownerRepository.DeleteOwnerAsync(ownerId);
 
             if(owner == null)
             {
-                return NotFound();
+                return NotFound($"OwnerId {ownerId} not found.");
             }
 
-            var ownerDTO = new Models.DTO.Owner()
-            {
-                Id = owner.Id,
-                OwnerCode = owner.OwnerCode,
-                FirstName = owner.FirstName,
-                LastName = owner.LastName,
-                MobileNo = owner.MobileNo,
-                Email = owner.Email,
-                TowerNo = owner.TowerNo,
-                FlatNo = owner.FlatNo,
-                UserName = owner.UserName,
-                Password = owner.Password
+            var deletedOwnerDTO = mapper.Map<Models.DTO.GetOwnerDTO>(owner);
 
-            };
+            //var ownerDTO = new Models.DTO.GetOwnerDTO()
+            //{
+            //    Id = owner.Id,
+            //    OwnerId = owner.OwnerId,
+            //    FirstName = owner.FirstName,
+            //    LastName = owner.LastName,
+            //    MobileNo = owner.MobileNo,
+            //    Email = owner.Email,
+            //    TowerNo = owner.TowerNo,
+            //    FlatNo = owner.FlatNo
 
-            return Ok(ownerDTO);
+            //};
+
+            return Ok(deletedOwnerDTO);
 
         }
 
 
 
         [HttpPut]
-        [Route("{ownerCode}")]
-        public async Task<IActionResult> UpdateOwnerAsync(string ownerCode, [FromBody] Models.DTO.Owner owner)
+        [Route("{ownerId}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateOwnerAsync(string ownerId, [FromBody] Models.DTO.UpdateOwnerDTO ownerDTO)
         {
-            var domainOwner = mapper.Map<Models.Domain.Owner>(owner);
+            var domainOwner = mapper.Map<Models.Domain.Owner>(ownerDTO);
 
-            var updatedOwner = await this.ownerRepository.UpdateOwnerAsync(ownerCode, domainOwner);
+            var updatedOwner = await this.ownerRepository.UpdateOwnerAsync(ownerId.ToUpper(), domainOwner);
 
-            if (owner == null)
+            if (updatedOwner == null)
             {
-                return NotFound();
+                return NotFound($"OwnerId {ownerId.ToUpper()} not found.");
             }
 
-            var ownerDTO = new Models.DTO.Owner()
-            {
-                Id = updatedOwner.Id,
-                OwnerCode = updatedOwner.OwnerCode,
-                FirstName = updatedOwner.FirstName,
-                LastName = updatedOwner.LastName,
-                MobileNo = updatedOwner.MobileNo,
-                Email = updatedOwner.Email,
-                TowerNo = updatedOwner.TowerNo,
-                FlatNo = updatedOwner.FlatNo,
-                UserName = updatedOwner.UserName,
-                Password = updatedOwner.Password
+            var updatedOwnerDTO = mapper.Map<Models.DTO.GetOwnerDTO>(updatedOwner);
 
-            };
-
-            return Ok(ownerDTO);
-
-
+            return Ok(updatedOwnerDTO);
 
 
         }

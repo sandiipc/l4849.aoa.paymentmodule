@@ -5,15 +5,15 @@ namespace PaymentLogInterfce.API.Repositories
     public interface IOwnerRepository
     {
 
-        Task<IEnumerable<Owner>> GetAllAsync();
+        Task<IEnumerable<Owner>> GetAllActiveOwnersAsync();
 
-        Task<Owner> GetByIdAsync(string ownerCode);
+        Task<Owner> GetActiveOwnerByIdAsync(string ownerId);
 
         Task<Owner> AddOwnerAsync(Owner owner);
 
-        Task<Owner> UpdateOwnerAsync(string ownerCode, Owner owner);
+        Task<Owner> UpdateOwnerAsync(string ownerId, Owner owner);
 
-        Task<Owner> DeleteOwnerAsync(string ownerCode);
+        Task<Owner> DeleteOwnerAsync(string ownerId);
 
     }
 }
