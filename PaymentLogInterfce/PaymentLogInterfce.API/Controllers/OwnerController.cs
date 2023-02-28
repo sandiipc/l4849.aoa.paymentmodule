@@ -21,6 +21,7 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetAllActiveOwnersAsync() 
         {
 
@@ -39,6 +40,7 @@ namespace PaymentLogInterfce.API.Controllers
         [HttpGet]
         [Route("{ownerId}")]
         [ActionName("GetActiveOwnerByIdAsync")]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetActiveOwnerByIdAsync(string ownerId)
         {
             var owner = await this.ownerRepository.GetActiveOwnerByIdAsync(ownerId);
@@ -56,7 +58,7 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> AddOwnerAsync([FromBody] Models.DTO.AddOwnerDTO ownerDTO)
         {
 
@@ -86,7 +88,7 @@ namespace PaymentLogInterfce.API.Controllers
 
         [HttpDelete]
         [Route("{ownerId}")]
-        [Authorize]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> DeleteOwnerAsync(string ownerId)
         {
 
@@ -120,7 +122,7 @@ namespace PaymentLogInterfce.API.Controllers
 
         [HttpPut]
         [Route("{ownerId}")]
-        [Authorize]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> UpdateOwnerAsync(string ownerId, [FromBody] Models.DTO.UpdateOwnerDTO ownerDTO)
         {
             var domainOwner = mapper.Map<Models.Domain.Owner>(ownerDTO);

@@ -33,7 +33,7 @@ namespace PaymentLogInterfce.API.Repositories
                 MobileNo= "9831654470",
                 UserName= "readwrite@user.com",
                 Password="Readwrite@user",
-                Roles=new List<string>{ "reader", "write" },
+                Roles=new List<string>{ "reader", "writer" },
                 IsDeleted="N"
 
             }
