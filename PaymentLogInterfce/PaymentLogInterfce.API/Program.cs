@@ -46,7 +46,6 @@ builder.Services.AddDbContext<PaymentLogDbContext>(options =>
 
 
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenHandler, PaymentLogInterfce.API.Repositories.TokenHandler>();
 
 

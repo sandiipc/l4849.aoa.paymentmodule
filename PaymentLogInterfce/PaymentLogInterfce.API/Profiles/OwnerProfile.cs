@@ -12,7 +12,7 @@ namespace PaymentLogInterfce.API.Profiles
 
 
             CreateMap<Models.Domain.Owner, Models.DTO.GetOwnerDTO>()
-                .ForMember(dest => dest.OwnerId, options => options.MapFrom(src => src.OwnerId))
+                .ForMember(dest => dest.OwnerCode, options => options.MapFrom(src => src.OwnerCode))
                 .ForMember(dest => dest.FirstName, options => options.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, options => options.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.MobileNo, options => options.MapFrom(src => src.MobileNo))

@@ -5,7 +5,7 @@ namespace PaymentLogInterfce.API.Models.Domain
     public class Owner
     {
         public Guid Id { get; set; }
-        public string OwnerId { get; set; }
+        public string OwnerCode { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobileNo { get; set; }
@@ -18,7 +18,11 @@ namespace PaymentLogInterfce.API.Models.Domain
         [DefaultValue("N")]
         public string IsDeleted { get; set; }
 
-        public IEnumerable<PaymentLog> PaymentLogs { get; set; }
+
+        public List<Owner_Role> OwnerRoles { get; set; }
+
+        public List<PaymentLog> PaymentLogs { get; set; }
+        
 
 
     }

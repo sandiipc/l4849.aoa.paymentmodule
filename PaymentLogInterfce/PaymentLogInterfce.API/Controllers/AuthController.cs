@@ -7,12 +7,13 @@ namespace PaymentLogInterfce.API.Controllers
     [Route("[controller]")]
     public class AuthController : Controller
     {
-        private readonly IUserRepository userRepository;
+
+        private readonly IOwnerRepository ownerRepository;
         private readonly ITokenHandler tokenHandler;
 
-        public AuthController(IUserRepository userRepository, ITokenHandler tokenHandler)
+        public AuthController(IOwnerRepository ownerRepository, ITokenHandler tokenHandler)
         {
-            this.userRepository = userRepository;
+            this.ownerRepository = ownerRepository;
             this.tokenHandler = tokenHandler;
         }
 
@@ -30,11 +31,11 @@ namespace PaymentLogInterfce.API.Controllers
                 return BadRequest("Password cannot be null or empty.");
             }
 
-            var user = await this.userRepository.AuthenticateAsync(loginRequest.UserName, loginRequest.Password);
+            var owner = await this.ownerRepository.AuthenticateAsync(loginRequest.UserName, loginRequest.Password);
 
-            if(user != null)
+            if(owner != null)
             {
-                var token = await this.tokenHandler.CreateTokenAsync(user);
+                var token = await this.tokenHandler.CreateTokenAsync(owner);
 
                 return Ok(token);
             }

@@ -41,13 +41,13 @@ namespace PaymentLogInterfce.API.Controllers
         [Route("{ownerId}")]
         [ActionName("GetActiveOwnerByIdAsync")]
         [Authorize(Roles = "reader")]
-        public async Task<IActionResult> GetActiveOwnerByIdAsync(string ownerId)
+        public async Task<IActionResult> GetActiveOwnerByIdAsync(string ownerCode)
         {
-            var owner = await this.ownerRepository.GetActiveOwnerByIdAsync(ownerId);
+            var owner = await this.ownerRepository.GetActiveOwnerByIdAsync(ownerCode);
 
             if(owner == null)
             {
-                return NotFound($"OwnerId {ownerId} not found.");
+                return NotFound($"OwnerId {ownerCode} not found.");
             }
 
             var ownerDTO = mapper.Map<Models.DTO.GetOwnerDTO>(owner);
@@ -62,26 +62,26 @@ namespace PaymentLogInterfce.API.Controllers
         public async Task<IActionResult> AddOwnerAsync([FromBody] Models.DTO.AddOwnerDTO ownerDTO)
         {
 
-            var ownerId = ownerDTO.TowerNo.ToUpper() + ownerDTO.FlatNo.ToUpper();
+            var ownerCode = ownerDTO.TowerNo.ToUpper() + ownerDTO.FlatNo.ToUpper();
 
-            var existingOwner = await GetActiveOwnerByIdAsync(ownerId);
+            var existingOwner = await GetActiveOwnerByIdAsync(ownerCode);
 
             if(existingOwner is NotFoundObjectResult)
             {
                 var owner = mapper.Map<Models.Domain.Owner>(ownerDTO);
                 owner.Id = Guid.NewGuid();
-                owner.OwnerId = ownerId;
+                owner.OwnerCode = ownerCode;
                 owner.IsDeleted = "N";
 
                 owner = await this.ownerRepository.AddOwnerAsync(owner);
                 var response = mapper.Map<Models.DTO.GetOwnerDTO>(owner);
 
-                return CreatedAtAction(nameof(GetActiveOwnerByIdAsync), new { OwnerId = ownerId }, response);
+                return CreatedAtAction(nameof(GetActiveOwnerByIdAsync), new { OwnerId = ownerCode }, response);
 
             }
 
 
-            return BadRequest($"Duplicate owner id {ownerId}.");
+            return BadRequest($"Duplicate owner id {ownerCode}.");
 
 
         }
@@ -89,14 +89,14 @@ namespace PaymentLogInterfce.API.Controllers
         [HttpDelete]
         [Route("{ownerId}")]
         [Authorize(Roles = "writer")]
-        public async Task<IActionResult> DeleteOwnerAsync(string ownerId)
+        public async Task<IActionResult> DeleteOwnerAsync(string ownerCode)
         {
 
-           var owner = await this.ownerRepository.DeleteOwnerAsync(ownerId);
+           var owner = await this.ownerRepository.DeleteOwnerAsync(ownerCode);
 
             if(owner == null)
             {
-                return NotFound($"OwnerId {ownerId} not found.");
+                return NotFound($"OwnerId {ownerCode} not found.");
             }
 
             var deletedOwnerDTO = mapper.Map<Models.DTO.GetOwnerDTO>(owner);
@@ -123,15 +123,15 @@ namespace PaymentLogInterfce.API.Controllers
         [HttpPut]
         [Route("{ownerId}")]
         [Authorize(Roles = "writer")]
-        public async Task<IActionResult> UpdateOwnerAsync(string ownerId, [FromBody] Models.DTO.UpdateOwnerDTO ownerDTO)
+        public async Task<IActionResult> UpdateOwnerAsync(string ownerCode, [FromBody] Models.DTO.UpdateOwnerDTO ownerDTO)
         {
             var domainOwner = mapper.Map<Models.Domain.Owner>(ownerDTO);
 
-            var updatedOwner = await this.ownerRepository.UpdateOwnerAsync(ownerId.ToUpper(), domainOwner);
+            var updatedOwner = await this.ownerRepository.UpdateOwnerAsync(ownerCode.ToUpper(), domainOwner);
 
             if (updatedOwner == null)
             {
-                return NotFound($"OwnerId {ownerId.ToUpper()} not found.");
+                return NotFound($"OwnerId {ownerCode.ToUpper()} not found.");
             }
 
             var updatedOwnerDTO = mapper.Map<Models.DTO.GetOwnerDTO>(updatedOwner);

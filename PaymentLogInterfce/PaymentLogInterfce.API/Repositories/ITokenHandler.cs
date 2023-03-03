@@ -4,7 +4,7 @@ namespace PaymentLogInterfce.API.Repositories
 {
     public interface ITokenHandler
     {
-        Task<string> CreateTokenAsync(User user);
+        Task<string> CreateTokenAsync(Owner owner);
 
     }
 }

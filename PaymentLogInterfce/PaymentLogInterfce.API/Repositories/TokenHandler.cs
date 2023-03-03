@@ -14,19 +14,19 @@ namespace PaymentLogInterfce.API.Repositories
         {
             this.configuration = configuration;
         }
-        public async Task<string> CreateTokenAsync(User user)
+        public async Task<string> CreateTokenAsync(Owner owner)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));
 
             var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.GivenName, user.FirstName));
-            claims.Add(new Claim(ClaimTypes.Surname, user.LastName));
-            claims.Add(new Claim(ClaimTypes.Email, user.Email));
+            claims.Add(new Claim(ClaimTypes.GivenName, owner.FirstName));
+            claims.Add(new Claim(ClaimTypes.Surname, owner.LastName));
+            claims.Add(new Claim(ClaimTypes.Email, owner.Email));
 
-            user.Roles.ForEach(role =>
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            });
+            //owner.Roles.ForEach(role =>
+            //{
+            //    claims.Add(new Claim(ClaimTypes.Role, role.Name));
+            //});
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

@@ -22,9 +22,9 @@ namespace PaymentLogInterfce.API.Repositories
             return owner;
         }
 
-        public async Task<Owner> DeleteOwnerAsync(string ownerId)
+        public async Task<Owner> DeleteOwnerAsync(string ownerCode)
         {
-            var owner = await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x => x.OwnerId == ownerId && x.IsDeleted == "N");
+            var owner = await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x => x.OwnerCode == ownerCode && x.IsDeleted == "N");
 
             if(owner == null)
             {
@@ -44,17 +44,17 @@ namespace PaymentLogInterfce.API.Repositories
 
         }
 
-        public async Task<Owner> GetActiveOwnerByIdAsync(string ownerId)
+        public async Task<Owner> GetActiveOwnerByIdAsync(string ownerCode)
         {
 
-            return await this.paymentLogDbContext.Owners.Where(x => x.OwnerId == ownerId && x.IsDeleted == "N").FirstOrDefaultAsync();
+            return await this.paymentLogDbContext.Owners.Where(x => x.OwnerCode == ownerCode && x.IsDeleted == "N").FirstOrDefaultAsync();
 
         }
 
-        public async Task<Owner> UpdateOwnerAsync(string ownerId, Owner owner)
+        public async Task<Owner> UpdateOwnerAsync(string ownerCode, Owner owner)
         {
 
-            var existingOwner = await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x => x.OwnerId == ownerId && x.IsDeleted == "N");
+            var existingOwner = await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x => x.OwnerCode == ownerCode && x.IsDeleted == "N");
 
             if (existingOwner == null)
             {
@@ -71,7 +71,15 @@ namespace PaymentLogInterfce.API.Repositories
             return existingOwner;
 
         }
-    
-    
+
+        public async Task<Owner> AuthenticateAsync(string username, string password)
+        {
+
+            return await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x=> x.UserName.ToLower() == username.ToLower() && x.Password == password);
+
+
+        }
+
+
     }
 }

@@ -12,8 +12,8 @@ using PaymentLogInterfce.API.Data;
 namespace PaymentLogInterfce.API.Migrations
 {
     [DbContext(typeof(PaymentLogDbContext))]
-    [Migration("20230224042142_Initial Migration")]
-    partial class InitialMigration
+    [Migration("20230303052557_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,7 +55,7 @@ namespace PaymentLogInterfce.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OwnerId")
+                    b.Property<string>("OwnerCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -76,6 +76,27 @@ namespace PaymentLogInterfce.API.Migrations
                     b.ToTable("Owners");
                 });
 
+            modelBuilder.Entity("PaymentLogInterfce.API.Models.Domain.Owner_Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Owners_Roles");
+                });
+
             modelBuilder.Entity("PaymentLogInterfce.API.Models.Domain.PaymentLog", b =>
                 {
                     b.Property<Guid>("Id")
@@ -92,10 +113,6 @@ namespace PaymentLogInterfce.API.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ParentOwnerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PaymentDate")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -111,6 +128,40 @@ namespace PaymentLogInterfce.API.Migrations
                     b.ToTable("PaymentLogs");
                 });
 
+            modelBuilder.Entity("PaymentLogInterfce.API.Models.Domain.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("PaymentLogInterfce.API.Models.Domain.Owner_Role", b =>
+                {
+                    b.HasOne("PaymentLogInterfce.API.Models.Domain.Owner", "Owner")
+                        .WithMany("OwnerRoles")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PaymentLogInterfce.API.Models.Domain.Role", "Role")
+                        .WithMany("OwnerRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("PaymentLogInterfce.API.Models.Domain.PaymentLog", b =>
                 {
                     b.HasOne("PaymentLogInterfce.API.Models.Domain.Owner", "Owner")
@@ -124,7 +175,14 @@ namespace PaymentLogInterfce.API.Migrations
 
             modelBuilder.Entity("PaymentLogInterfce.API.Models.Domain.Owner", b =>
                 {
+                    b.Navigation("OwnerRoles");
+
                     b.Navigation("PaymentLogs");
+                });
+
+            modelBuilder.Entity("PaymentLogInterfce.API.Models.Domain.Role", b =>
+                {
+                    b.Navigation("OwnerRoles");
                 });
 #pragma warning restore 612, 618
         }

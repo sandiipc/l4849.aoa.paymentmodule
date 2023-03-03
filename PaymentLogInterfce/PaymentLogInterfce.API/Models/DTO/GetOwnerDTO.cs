@@ -5,7 +5,7 @@ namespace PaymentLogInterfce.API.Models.DTO
     public class GetOwnerDTO
     {
 
-        public string OwnerId { get; set; }
+        public string OwnerCode { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobileNo { get; set; }
