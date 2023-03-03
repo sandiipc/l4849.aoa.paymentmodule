@@ -1,5 +1,7 @@
 ﻿
 
+
+
 namespace PaymentLogInterfce.API.Models.Domain
 {
     public class Role

@@ -75,7 +75,34 @@ namespace PaymentLogInterfce.API.Repositories
         public async Task<Owner> AuthenticateAsync(string username, string password)
         {
 
-            return await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x=> x.UserName.ToLower() == username.ToLower() && x.Password == password);
+            var owner = await this.paymentLogDbContext.Owners.FirstOrDefaultAsync(x=> x.UserName.ToLower() == username.ToLower() 
+            && x.Password == password);
+
+            if(owner == null)
+            {
+                return null;
+            }
+
+            var ownerRoles = await this.paymentLogDbContext.Owners_Roles.Where(x => x.OwnerId== owner.Id).ToListAsync();
+
+            if(ownerRoles.Any()) 
+            {
+                owner.Roles = new List<string>();
+                foreach (var ownerRole in ownerRoles)
+                {
+                    var role = await this.paymentLogDbContext.Roles.FirstOrDefaultAsync(x => x.Id == ownerRole.RoleId);
+
+                    if (role != null)
+                    {
+                        owner.Roles.Add(role.Name);
+                    }
+
+                }
+            
+            }
+
+            owner.Password = null;
+            return owner;
 
 
         }

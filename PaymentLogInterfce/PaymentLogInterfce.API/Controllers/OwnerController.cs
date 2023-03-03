@@ -21,7 +21,7 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "reader")]
+        [Authorize(Roles = "Viewer")]
         public async Task<IActionResult> GetAllActiveOwnersAsync() 
         {
 
@@ -40,7 +40,7 @@ namespace PaymentLogInterfce.API.Controllers
         [HttpGet]
         [Route("{ownerId}")]
         [ActionName("GetActiveOwnerByIdAsync")]
-        [Authorize(Roles = "reader")]
+        [Authorize(Roles = "Viewer")]
         public async Task<IActionResult> GetActiveOwnerByIdAsync(string ownerCode)
         {
             var owner = await this.ownerRepository.GetActiveOwnerByIdAsync(ownerCode);
@@ -58,7 +58,7 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "writer")]
+        [Authorize(Roles = "Viewer,Contributer")]
         public async Task<IActionResult> AddOwnerAsync([FromBody] Models.DTO.AddOwnerDTO ownerDTO)
         {
 
@@ -88,7 +88,7 @@ namespace PaymentLogInterfce.API.Controllers
 
         [HttpDelete]
         [Route("{ownerId}")]
-        [Authorize(Roles = "writer")]
+        [Authorize(Roles = "Viewer,Contributer")]
         public async Task<IActionResult> DeleteOwnerAsync(string ownerCode)
         {
 
@@ -101,19 +101,6 @@ namespace PaymentLogInterfce.API.Controllers
 
             var deletedOwnerDTO = mapper.Map<Models.DTO.GetOwnerDTO>(owner);
 
-            //var ownerDTO = new Models.DTO.GetOwnerDTO()
-            //{
-            //    Id = owner.Id,
-            //    OwnerId = owner.OwnerId,
-            //    FirstName = owner.FirstName,
-            //    LastName = owner.LastName,
-            //    MobileNo = owner.MobileNo,
-            //    Email = owner.Email,
-            //    TowerNo = owner.TowerNo,
-            //    FlatNo = owner.FlatNo
-
-            //};
-
             return Ok(deletedOwnerDTO);
 
         }
@@ -122,7 +109,7 @@ namespace PaymentLogInterfce.API.Controllers
 
         [HttpPut]
         [Route("{ownerId}")]
-        [Authorize(Roles = "writer")]
+        [Authorize(Roles = "Viewer,Contributer")]
         public async Task<IActionResult> UpdateOwnerAsync(string ownerCode, [FromBody] Models.DTO.UpdateOwnerDTO ownerDTO)
         {
             var domainOwner = mapper.Map<Models.Domain.Owner>(ownerDTO);

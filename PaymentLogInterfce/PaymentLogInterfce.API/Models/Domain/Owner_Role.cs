@@ -1,4 +1,6 @@
 ﻿
+
+
 namespace PaymentLogInterfce.API.Models.Domain
 {
     public class Owner_Role

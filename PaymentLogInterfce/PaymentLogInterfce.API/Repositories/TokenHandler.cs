@@ -23,10 +23,10 @@ namespace PaymentLogInterfce.API.Repositories
             claims.Add(new Claim(ClaimTypes.Surname, owner.LastName));
             claims.Add(new Claim(ClaimTypes.Email, owner.Email));
 
-            //owner.Roles.ForEach(role =>
-            //{
-            //    claims.Add(new Claim(ClaimTypes.Role, role.Name));
-            //});
+            owner.Roles.ForEach(role =>
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            });
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
