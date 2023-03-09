@@ -21,7 +21,7 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Viewer")]
+        [Authorize(Roles = "Viewer,Contributor")]
         public async Task<IActionResult> GetAllActiveOwnersAsync() 
         {
 
@@ -40,7 +40,7 @@ namespace PaymentLogInterfce.API.Controllers
         [HttpGet]
         [Route("{ownerId}")]
         [ActionName("GetActiveOwnerByIdAsync")]
-        [Authorize(Roles = "Viewer")]
+        [Authorize(Roles = "Viewer,Contributor")]
         public async Task<IActionResult> GetActiveOwnerByIdAsync(string ownerCode)
         {
             var owner = await this.ownerRepository.GetActiveOwnerByIdAsync(ownerCode);
@@ -58,7 +58,7 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Viewer,Contributer")]
+        [Authorize(Roles = "Contributor")]
         public async Task<IActionResult> AddOwnerAsync([FromBody] Models.DTO.AddOwnerDTO ownerDTO)
         {
 
@@ -88,7 +88,7 @@ namespace PaymentLogInterfce.API.Controllers
 
         [HttpDelete]
         [Route("{ownerId}")]
-        [Authorize(Roles = "Viewer,Contributer")]
+        [Authorize(Roles = "Contributor")]
         public async Task<IActionResult> DeleteOwnerAsync(string ownerCode)
         {
 
@@ -109,7 +109,7 @@ namespace PaymentLogInterfce.API.Controllers
 
         [HttpPut]
         [Route("{ownerId}")]
-        [Authorize(Roles = "Viewer,Contributer")]
+        [Authorize(Roles = "Contributor")]
         public async Task<IActionResult> UpdateOwnerAsync(string ownerCode, [FromBody] Models.DTO.UpdateOwnerDTO ownerDTO)
         {
             var domainOwner = mapper.Map<Models.Domain.Owner>(ownerDTO);
