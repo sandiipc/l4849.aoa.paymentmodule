@@ -7,8 +7,10 @@ apiappname=PaymentLogInterface.API
 printf "Setting username and password for Git ... (1/7)\n\n"
 
 
-GIT_USERNAME=gitName$Random
-GIT_EMAIL=a@b.c
+# gitName$Random
+
+GIT_USERNAME=sandiipc
+GIT_EMAIL=sandiipc@outlook.com
 
 git config --global user.name "$GIT_USERNAME"
 git config --global user.email "$GIT_EMAIL"
