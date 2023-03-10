@@ -1,6 +1,6 @@
 ﻿#!/bin/bash
 
-apiappname=PaymentLogInterfaceAPI
+apiappname=PaymentLogInterface.API
 
 # $(openssl rand -hex 5)
 
