@@ -7,7 +7,7 @@ using PaymentLogInterfce.API.Repositories;
 namespace PaymentLogInterfce.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class OwnerController : Controller
     {
         private readonly IOwnerRepository ownerRepository;
@@ -21,7 +21,7 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Viewer,Contributor")]
+        [Authorize(Roles = "Viewer,Contributor")]        
         public async Task<IActionResult> GetAllActiveOwnersAsync() 
         {
 
@@ -38,7 +38,7 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpGet]
-        [Route("{ownerId}")]
+        [Route("{ownerCode}")]
         [ActionName("GetActiveOwnerByIdAsync")]
         [Authorize(Roles = "Viewer,Contributor")]
         public async Task<IActionResult> GetActiveOwnerByIdAsync(string ownerCode)
@@ -87,7 +87,7 @@ namespace PaymentLogInterfce.API.Controllers
         }
 
         [HttpDelete]
-        [Route("{ownerId}")]
+        [Route("{ownerCode}")]
         [Authorize(Roles = "Contributor")]
         public async Task<IActionResult> DeleteOwnerAsync(string ownerCode)
         {
@@ -108,7 +108,7 @@ namespace PaymentLogInterfce.API.Controllers
 
 
         [HttpPut]
-        [Route("{ownerId}")]
+        [Route("{ownerCode}")]
         [Authorize(Roles = "Contributor")]
         public async Task<IActionResult> UpdateOwnerAsync(string ownerCode, [FromBody] Models.DTO.UpdateOwnerDTO ownerDTO)
         {
