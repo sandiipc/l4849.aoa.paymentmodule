@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using PaymentLogInterfce.API.Data;
 using PaymentLogInterfce.API.Repositories;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,6 +67,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
     });
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowedOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // note the port is included 
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -82,5 +97,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowedOrigins");
 
 app.Run();
