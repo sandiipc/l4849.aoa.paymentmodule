@@ -4,7 +4,7 @@ using PaymentLogInterfce.API.Repositories;
 namespace PaymentLogInterfce.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : Controller
     {
 
